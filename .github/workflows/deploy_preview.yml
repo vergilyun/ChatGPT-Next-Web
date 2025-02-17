@@ -3,8 +3,7 @@ name: VercelPreviewDeployment
 on:
   pull_request_target:
     types:
-      - opened
-      - synchronize
+      - review_requested
 
 env:
   VERCEL_TEAM: ${{ secrets.VERCEL_TEAM }}
@@ -23,6 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Extract branch name
         shell: bash
@@ -46,7 +47,7 @@ jobs:
         run: npm install --global vercel@latest
 
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         id: cache-npm
         with:
           path: ~/.npm
